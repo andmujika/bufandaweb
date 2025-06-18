@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nire Bufanda Bilduma</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='images/web_logo.png') }}" alt="Nire Bufanda Bilduma Logo" class="main-logo">
+    </div>
+
+    <form class="search-form" method="get" action="{{ url_for('index') }}">
+        <div class="search-inputs">
+            <label for="search_field">Bilatu:</label>
+            <select id="search_field" name="search_field">
+                {% for col in filterable_columns %}
+                    <option value="{{ col.value }}" {% if col.value == current_search_field %}selected{% endif %}>
+                        {{ col.label }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <input type="text" id="text_search_input" name="search_query"
+                   placeholder="Sartu bilaketa terminoa..."
+                   value="{{ current_search_query }}">
+
+            <select id="year_search_input" name="search_query_year">
+                <option value="">Aukeratu urtea</option>
+                {% for year in all_years %}
+                    <option value="{{ year }}" {% if year == current_search_query %}selected{% endif %}>
+                        {{ year }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Bilatu</button>
+        </div>
+
+        <div class="view-toggle-container">
+            <label class="switch">
+                <input type="checkbox" id="viewToggle">
+                <span class="slider round"></span>
+            </label>
+            <span id="viewModeLabel">Grid Ikuspegia</span>
+        </div>
+    </form>
+    
+    <div id="bufandasContainer">
+        {# Grid bista #}
+        <div class="bufandas-grid" id="gridView">
+            {% for bufanda in bufandas %}
+            {% if bufanda.ZENBAKIA is not none %}
+            <div class="bufanda-item"
+                 data-bufanda-url="{{ url_for('bufanda_detalle', bufanda_id=bufanda.ZENBAKIA) }}" {# URL-a datu atributu batean gorde #}
+                 {% if bufanda.MAIN_IMAGE %}
+                 style="--background-image: url('{{ url_for('static', filename='images/' + bufanda.MAIN_IMAGE) }}');"
+                 {% endif %}>
+                <h3>{{ bufanda.TALDEA }}</h3>
+                <p>Liga: {{ bufanda.LIGA }}</p>
+            </div>
+            {% else %}
+            <div class="bufanda-item">
+                <h3>Error: Bufanda sin ZENBAKIA válido</h3>
+                <p>Equipo: {{ bufanda.TALDEA }}</p>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        {# Zerrenda bista (taula) #}
+        <table class="bufandas-list" id="listView" style="display: none;">
+            <thead>
+                <tr>
+                    <th class="col-img"></th> {# Irudirako #}
+                    <th class="col-taldea">Taldea</th> {# Zabaldu #}
+                    <th class="col-liga">Liga</th>
+                    <th class="col-noiz">Noiz</th> {# Zabaldu #}
+                    <th class="col-nork">Nork</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bufanda in bufandas %}
+                <tr data-bufanda-url="{{ url_for('bufanda_detalle', bufanda_id=bufanda.ZENBAKIA) }}"> {# URL-a datu atributu batean gorde #}
+                    <td>
+                        {% if bufanda.MAIN_IMAGE %}
+                            <img src="{{ url_for('static', filename='images/' + bufanda.MAIN_IMAGE) }}" alt="{{ bufanda.TALDEA }}" class="list-item-img">
+                        {% endif %}
+                        {# Ez dugu "no image" jarriko irudirik ez badago #}
+                    </td>
+                    <td>{{ bufanda.TALDEA }}</td>
+                    <td>{{ bufanda.LIGA }}</td>
+                    <td>{{ bufanda.NOIZ }}</td>
+                    <td>{{ bufanda.NORK }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Lógica para cambiar entre campo de texto y desplegable de años
+        const searchFieldSelect = document.getElementById('search_field');
+        const textSearchInput = document.getElementById('text_search_input');
+        const yearSearchInput = document.getElementById('year_search_input');
+
+        function toggleSearchInput() {
+            if (searchFieldSelect.value === 'NOIZ') {
+                textSearchInput.style.display = 'none';
+                textSearchInput.disabled = true;
+
+                yearSearchInput.style.display = 'inline-block';
+                yearSearchInput.disabled = false;
+
+                textSearchInput.value = '';
+            } else {
+                textSearchInput.style.display = 'inline-block';
+                textSearchInput.disabled = false;
+
+                yearSearchInput.style.display = 'none';
+                yearSearchInput.disabled = true;
+
+                yearSearchInput.value = '';
+            }
+        }
+
+        toggleSearchInput();
+        searchFieldSelect.addEventListener('change', toggleSearchInput);
+
+        // Lógica para el toggle switch de vista (Grid/Lista)
+        const viewToggle = document.getElementById('viewToggle');
+        const gridView = document.getElementById('gridView');
+        const listView = document.getElementById('listView');
+        const viewModeLabel = document.getElementById('viewModeLabel');
+
+        const savedViewMode = localStorage.getItem('bufandaViewMode');
+
+        function setViewMode(mode) {
+            if (mode === 'list') {
+                viewToggle.checked = true;
+                gridView.style.display = 'none';
+                listView.style.display = 'table';
+                viewModeLabel.textContent = 'Zerrenda Ikuspegia';
+                localStorage.setItem('bufandaViewMode', 'list');
+            } else { // 'grid' mode
+                viewToggle.checked = false;
+                gridView.style.display = 'grid';
+                listView.style.display = 'none';
+                viewModeLabel.textContent = 'Grid Ikuspegia';
+                localStorage.setItem('bufandaViewMode', 'grid');
+            }
+        }
+
+        // Karga hasieran, gorde den modua aplikatu
+        setViewMode(savedViewMode || 'grid'); // Lehenetsia 'grid'
+
+        viewToggle.addEventListener('change', function() {
+            if (this.checked) {
+                setViewMode('list');
+            } else {
+                setViewMode('grid');
+            }
+        });
+
+        // Lógica para abrir en nueva pestaña con el clic central del ratón
+        // Para elementos de la cuadrícula
+        document.querySelectorAll('.bufanda-item').forEach(item => {
+            item.addEventListener('auxclick', function(event) {
+                if (event.button === 1) { // 1 es el botón del medio
+                    const url = this.dataset.bufandaUrl;
+                    if (url) {
+                        window.open(url, '_blank');
+                        event.preventDefault(); // Ekiditu nabigatzailearen portaera lehenetsia
+                    }
+                }
+            });
+            // También añadir el click normal para abrir en la misma pestaña
+            item.addEventListener('click', function(event) {
+                if (event.button === 0) { // 0 es el botón izquierdo
+                    window.location.href = this.dataset.bufandaUrl;
+                }
+            });
+        });
+
+        // Para elementos de la tabla
+        document.querySelectorAll('.bufandas-list tbody tr').forEach(row => {
+            row.addEventListener('auxclick', function(event) {
+                if (event.button === 1) { // 1 es el botón del medio
+                    const url = this.dataset.bufandaUrl;
+                    if (url) {
+                        window.open(url, '_blank');
+                        event.preventDefault(); // Ekiditu nabigatzailearen portaera lehenetsia
+                    }
+                }
+            });
+            // También añadir el click normal para abrir en la misma pestaña
+            row.addEventListener('click', function(event) {
+                if (event.button === 0) { // 0 es el botón izquierdo
+                    window.location.href = this.dataset.bufandaUrl;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

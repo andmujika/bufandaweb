@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bufanda: {{ bufanda.TALDEA }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="detail-container">
+        <h1>{{ bufanda.TALDEA }}</h1>
+        <p><strong>Data:</strong> {{ bufanda.NOIZ }}</p>
+        <p><strong>Liga:</strong> {{ bufanda.LIGA }}</p>
+        <p><strong>Nork Ekarria:</strong> {{ bufanda.NORK }}</p>
+        <p><strong>Istorioa:</strong> {{ bufanda.BESTE }}</p>
+
+        <h2>Argazkiak</h2>
+        <div class="carousel-container">
+            <div class="carousel-slide">
+                {% set photos_available = false %}
+
+                {% if bufanda.MAIN_IMAGE %}
+                    <img src="{{ url_for('static', filename='images/' + bufanda.MAIN_IMAGE) }}" alt="Bufanda de {{ bufanda.TALDEA }} - Principal">
+                    {% set photos_available = true %}
+                {% endif %}
+                {% if bufanda.IMAGE_1 %}
+                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_1) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 1">
+                    {% set photos_available = true %}
+                {% endif %}
+                {% if bufanda.IMAGE_2 %}
+                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_2) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 2">
+                    {% set photos_available = true %}
+                {% endif %}
+                {# Añade más bloques 'if' aquí si tienes más columnas de imagen (e.g., IMAGE_3, IMAGE_4) #}
+                {% if bufanda.IMAGE_3 %}
+                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_3) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 3">
+                    {% set photos_available = true %}
+                {% endif %}
+                {% if bufanda.IMAGE_4 %}
+                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_4) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 4">
+                    {% set photos_available = true %}
+                {% endif %}
+                {% if bufanda.IMAGE_5 %}
+                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_5) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 5">
+                    {% set photos_available = true %}
+                {% endif %}
+            </div>
+
+            {% if photos_available %}
+            <div class="carousel-nav">
+                <button class="prev-btn">&lt;</button>
+                <button class="next-btn">&gt;</button>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if not photos_available %}
+            <p class="no-fotos-msg">Ez dago argazkirik</p>
+        {% endif %}
+
+        <a href="{{ url_for('index') }}" class="back-link">← Itzuli</a>
+    </div>
+
+    <script>
+        const carouselSlide = document.querySelector('.carousel-slide');
+        const carouselImages = document.querySelectorAll('.carousel-slide img');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+
+        if (carouselImages.length > 0) {
+            let counter = 0; // Inicia en la primera imagen (índice 0)
+            const size = carouselImages[0].clientWidth; // Ancho de una sola imagen
+
+            // Inicializar la posición del carrusel en la primera imagen
+            carouselSlide.style.transform = 'translateX(' + (-size * counter) + 'px)';
+
+            // Botón Siguiente
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (counter >= carouselImages.length - 1) { // Si ya estamos en la última imagen
+                        counter = 0; // Volver al principio
+                    } else {
+                        counter++;
+                    }
+                    carouselSlide.style.transform = 'translateX(' + (-size * counter) + 'px)';
+                });
+            }
+
+            // Botón Anterior
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (counter <= 0) { // Si ya estamos en la primera imagen
+                        counter = carouselImages.length - 1; // Ir a la última imagen
+                    } else {
+                        counter--;
+                    }
+                    carouselSlide.style.transform = 'translateX(' + (-size * counter) + 'px)';
+                });
+            }
+
+            // Opcional: Recalcular el tamaño si la ventana cambia de tamaño
+            window.addEventListener('resize', () => {
+                const newSize = carouselImages[0].clientWidth;
+                carouselSlide.style.transform = 'translateX(' + (-newSize * counter) + 'px)';
+            });
+
+        } else {
+            // Ocultar los botones si no hay imágenes
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+        }
+
+    </script>
+</body>
+</html>
