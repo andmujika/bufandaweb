@@ -158,3 +158,7 @@ def bufanda_detalle(bufanda_id):
     if bufanda is None:
         return "Bufanda no encontrada", 404
     return render_template('detalle_bufanda.html', bufanda=bufanda)
+    
+if __name__ == "__main__":
+  port = int(os.environ.get("PORT", 4000))
+  app.run(host="0.0.0.0", port=port)
