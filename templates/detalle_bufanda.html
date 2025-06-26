@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+	<div class="logo-container">
+        <img src="{{ url_for('static', filename='images/web_logo.png') }}" alt="Nire Bufanda Bilduma Logo" class="main-logo">
+    </div>
+	
     <div class="detail-container">
         <h1>{{ bufanda.TALDEA }}</h1>
         <p><strong>Data:</strong> {{ bufanda.NOIZ }}</p>
