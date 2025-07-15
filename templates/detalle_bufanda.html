@@ -13,7 +13,7 @@
 	
     <div class="detail-container">
         <h1>{{ bufanda.TALDEA }}</h1>
-        <p><strong>Data:</strong> <a href="{{ url_for('index', search_field='NOIZ', search_query=bufanda.NOIZ) }}">{{ bufanda.NOIZ }}</a></p>
+        <p><strong>Data:</strong> <a href="{{ url_for('index', search_field='NOIZ', search_query_year=bufanda.NOIZ.split(' ')[0]) }}">{{ bufanda.NOIZ }}</a></p>
         <p><strong>Liga:</strong> <a href="{{ url_for('index', search_field='LIGA', search_query=bufanda.LIGA) }}">{{ bufanda.LIGA }}</a></p>
         <p><strong>Nork Ekarria:</strong> <a href="{{ url_for('index', search_field='NORK', search_query=bufanda.NORK) }}">{{ bufanda.NORK }}</a></p>
         <p><strong>Istorioa:</strong> {{ bufanda.BESTE }}</p>
