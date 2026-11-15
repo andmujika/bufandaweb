@@ -25,9 +25,10 @@
         {% endif %}
 
         {% if bufanda.LIGA %}
+        {% set liga_display = format_league(bufanda.LIGA) %}
         <p>
             <strong>{{ t['detail_league'] }}:</strong>
-            <a href="{{ url_for('bilduma', search_field='LIGA', search_query=bufanda.LIGA) }}">{{ bufanda.LIGA }}</a>
+            <a href="{{ url_for('bilduma', search_field='LIGA', search_query=liga_display) }}">{{ liga_display }}</a>
         </p>
         {% endif %}
 
@@ -39,9 +40,12 @@
         {% endif %}
     </div>
 
+    {% set story_display = format_story(bufanda) %}
+    {% if story_display %}
     <div class="detail-story-box">
-        <p><strong>{{ t['detail_story'] }}:</strong> {{ bufanda.BESTE if bufanda.BESTE else t['detail_no_story'] }}</p>
+        <p><strong>{{ t['detail_story'] }}:</strong> {{ story_display }}</p>
     </div>
+    {% endif %}
 
     {% if valid_imgs and valid_imgs|length > 0 %}
     <div class="detail-photos-section" id="photosSection">

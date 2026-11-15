@@ -66,7 +66,7 @@
                  style="--background-image: url('{{ url_for('static', filename='images/' + bufanda.main_image) }}');"
                  {% endif %}>
                 <h3>{{ bufanda.TALDEA }}</h3>
-                <p>{{ bufanda.NONDIK }} · {{ bufanda.LIGA }}</p>
+                <p>{{ bufanda.NONDIK }} · {{ format_league(bufanda.LIGA) }}</p>
             </div>
             {% endif %}
             {% endfor %}
@@ -97,7 +97,7 @@
                     </td>
                     <td><strong>{{ bufanda.TALDEA }}</strong></td>
                     <td>{{ bufanda.NONDIK }}</td>
-                    <td>{{ bufanda.LIGA }}</td>
+                    <td>{{ format_league(bufanda.LIGA) }}</td>
                     <td>{{ format_date(bufanda.NOIZ) }}</td>
                     <td>{{ bufanda.NORK }}</td>
                 </tr>

@@ -67,12 +67,13 @@
                 <h3>{{ bufanda_del_dia.TALDEA }}</h3>
                 <p class="sotd-meta">
                     {% if bufanda_del_dia.NONDIK %}<span><strong>{{ t['detail_city'] }}:</strong> {{ bufanda_del_dia.NONDIK }}</span>{% endif %}
-                    {% if bufanda_del_dia.LIGA %}<span><strong>{{ t['detail_league'] }}:</strong> {{ bufanda_del_dia.LIGA }}</span>{% endif %}
+                    {% if bufanda_del_dia.LIGA %}<span><strong>{{ t['detail_league'] }}:</strong> {{ format_league(bufanda_del_dia.LIGA) }}</span>{% endif %}
                     {% if bufanda_del_dia.NOIZ %}<span><strong>{{ t['detail_date'] }}:</strong> {{ format_date(bufanda_del_dia.NOIZ) }}</span>{% endif %}
                     {% if bufanda_del_dia.NORK %}<span><strong>{{ t['detail_who'] }}:</strong> {{ bufanda_del_dia.NORK }}</span>{% endif %}
                 </p>
-                {% if bufanda_del_dia.BESTE %}
-                <p class="sotd-story">"{{ bufanda_del_dia.BESTE }}"</p>
+                {% set sotd_story = format_story(bufanda_del_dia) %}
+                {% if sotd_story %}
+                <p class="sotd-story">"{{ sotd_story }}"</p>
                 {% endif %}
                 <a href="{{ url_for('bufanda_detalle', bufanda_id=bufanda_del_dia.ZENBAKIA) }}" class="btn-primary">
                     {{ t['sotd_cta'] }}

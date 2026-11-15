@@ -197,6 +197,132 @@ MONTH_MAP_EN = {
     'Abendua': 'December',
 }
 
+LEAGUE_MAP_EN = {
+    'Alemania': 'Germany',
+    'Argentina': 'Argentina',
+    'Austria': 'Austria',
+    'Belgika': 'Belgium',
+    'Berezia': 'Special',
+    'Bolivia': 'Bolivia',
+    'Brazil': 'Brazil',
+    'Danimarka': 'Denmark',
+    'Errumania': 'Romania',
+    'Errusia': 'Russia',
+    'Eskozia': 'Scotland',
+    'Eslovenia': 'Slovenia',
+    'Espainia': 'Spain',
+    'Frantzia': 'France',
+    'Gipuzkoa': 'Gipuzkoa',
+    'Grezia': 'Greece',
+    'Herbehereak': 'Netherlands',
+    'Hungaria': 'Hungary',
+    'Ingalaterra': 'England',
+    'Irlanda': 'Ireland',
+    'Italia': 'Italy',
+    'Japonia': 'Japan',
+    'Kolonbia': 'Colombia',
+    'Kroazia': 'Croatia',
+    'MLS (USA - Kanada)': 'MLS (USA - Canada)',
+    'Malta': 'Malta',
+    'Marocco': 'Morocco',
+    'Mexico': 'Mexico',
+    'Moldavia': 'Moldova',
+    'NFL (Estatu Batuak)': 'NFL (United States)',
+    'Norbegia': 'Norway',
+    'Peru': 'Peru',
+    'Polonia': 'Poland',
+    'Portugal': 'Portugal',
+    'Selekzioa': 'National Team',
+    'Suedia': 'Sweden',
+    'Turkia': 'Turkey',
+    'Txekiar Errepublika': 'Czech Republic',
+    'Txipre': 'Cyprus',
+    'Uruguay': 'Uruguay',
+}
+
+STORY_MAP_EN_BY_ID = {
+    1: 'Scarf obtained when we went to Oktoberfest with KuadriJAH.',
+    16: 'Ittu did his Erasmus in Glasgow and brought it back from there for his brother Beñat.',
+    37: 'Scarf brought back when Real Sociedad played against Manchester United. When entering the stadium, local security staff asked them what on earth they were doing with that scarf. Once they explained it was for me, they let them through.',
+    64: 'Scarf Nerea and I got during a trip to Berlin over a cold Easter week, at a small flea market we stumbled upon at the last minute.',
+    88: 'Scarf bought on Nerea and my honeymoon.',
+    89: 'Scarf bought on Nerea and my honeymoon.',
+    90: 'Scarf bought on Nerea and my honeymoon.',
+    91: 'Scarf bought on Nerea and my honeymoon.',
+    92: 'Scarf bought on Nerea and my honeymoon.',
+    93: 'Scarf bought on Nerea and my honeymoon.',
+    94: 'Scarf bought on Nerea and my honeymoon. Having no idea where to find one, I even asked in the store of their archrivals, Hellas…',
+    95: 'Scarf bought on Nerea and my honeymoon. Found by pure chance in a tiny shop right on the famous Rialto Bridge.',
+    96: 'Scarf bought on Nerea and my honeymoon.',
+    97: 'Scarf bought on Nerea and my honeymoon.',
+    98: 'Scarf bought on Nerea and my honeymoon.',
+    99: 'Scarf bought on Nerea and my honeymoon.',
+    118: 'Although Roberto is from Móstoles, his family is from León and his father brought him the scarf from there.',
+    119: 'My former colleague Jose made it crystal clear that under no circumstances would he bring me a Betis scarf from his hometown.',
+    128: 'Ittu went on a work trip to Wales and brought me back a couple of scarves from there.',
+    129: 'Ittu went on a work trip to Wales and brought me back a couple of scarves from there.',
+    133: '7-a-side Football',
+    138: 'One of the 4 scarves my parents got on their trip to Moscow.',
+    139: 'One of the 4 scarves my parents got on their trip to Moscow.',
+    140: 'One of the 4 scarves my parents got on their trip to Moscow.',
+    141: 'One of the 4 scarves my parents got on their trip to Moscow.',
+    144: 'Scarf brought back from a trip to Madrid with KuadriJAH.',
+    152: 'Scarf bought at the match Real Sociedad played in Eindhoven.',
+    153: 'Brought back from the Europa League match Real Sociedad played in Leipzig.',
+    155: 'Brought back by Itziar from a conference.',
+    156: 'Brought back by Nerea from her research stay in Boston.',
+    195: 'Scarf obtained by pure chance at the Zubipe stadium bar.',
+    197: 'A gift from David and Iñaki. Very few were made, and Ajax fans kept asking them for one constantly.',
+    2001: 'Gaelic Football',
+    2002: 'American Football',
+    2003: 'Handball',
+    198: 'Scarf released by two die-hard enthusiasts from Atotxa.org and Ciclista Football Club.',
+    199: 'Scarf released by two die-hard enthusiasts from Atotxa.org and Ciclista Football Club.',
+    200: 'Second Benfica scarf. Nicer than the previous one.',
+    201: 'From Eki’s vocational training trip to Norway.',
+    202: 'From Eki’s vocational training trip to Norway.',
+    203: 'After hearing from my mother about my scarf collection, a friend of hers decided I simply had to have one from Elgoibar.',
+    204: 'Brought back after spending several months in Atlanta with the family.',
+    205: 'Brought back by Asier and Estitxu from their trip to Romania.',
+    206: 'Brought back by Asier and Estitxu from their trip to Romania.',
+    207: 'Scarf swapped at the 2001 UEFA Cup final. Apparently the Alavés shirt was ugly, so Asier preferred to return from the final in Dortmund with this scarf instead.',
+    208: 'Scarf picked up during their annual trip to Jacek’s home. They made it very clear they would never, under any circumstances, bring me a Legia scarf.',
+    209: 'Nerea had to sprint in the car to get this scarf. We reached the stadium at 6:57 PM (it closed at 7:00 PM).\nThe scarf features the years of all the league titles won by Nantes.',
+    210: 'Estitxu and Asier went to Santander to watch Anari and Uxue play with the Basque national team.',
+    211: 'Scarf bought by Jon Haitz on a trip to a conference. Probably the scarf in this collection that has traveled the most kilometers: Japan -> Boston -> Gatika -> Donostia. Like the other Japanese scarf, it is towel-style; quite unique.',
+    212: 'Asier tricked a few friends into bringing back this scarf—anything to increase his contribution to this collection.',
+    213: 'Patxi played in the World Mus Championship in Buenos Aires and brought me 5 scarves from there. This is the longest scarf in my collection.',
+    214: 'Patxi played in the World Mus Championship in Buenos Aires and brought me 5 scarves from there.',
+    215: 'Patxi played in the World Mus Championship in Buenos Aires and brought me 5 scarves from there.',
+    216: 'Patxi played in the World Mus Championship in Buenos Aires and brought me 5 scarves from there.',
+    217: 'Patxi played in the World Mus Championship in Buenos Aires and brought me 5 scarves from there.',
+    218: 'Real Sociedad’s 5th Copa del Rey victory in Seville. Lasa and Ittu went from KuadriJAH, and Ittu brought me the scarf.',
+    219: 'Scarf Ittu got during his work trips to CAF in Zaragoza. He kept it at home for a few months before finally handing it over to me.',
+    220: 'Taking advantage of a conference Ion had there, they took a family trip to Bergamo and brought me this scarf. They knew that when Nerea and I passed through, it had been impossible to find an Atalanta scarf (while Inter, Barça, or Manchester ones were everywhere).',
+    221: 'Scarf brought back by Uxue from her trip as an aid worker.',
+    222: 'Lasa was at the Venice Biennale supporting the Basque delegation with the Etxepare Institute and brought me this scarf from there. Note that it is not the same club as the SSC Venezia one I already had.',
+    223: 'Scarf brought back by Idoia from a business trip—the year Depor returned to the First Division after a long time.',
+    224: 'Scarf obtained during Eki’s vocational training Erasmus placement.',
+    225: 'Scarf obtained during Eki’s vocational training Erasmus placement.',
+    226: 'Scarf from Ainhoa’s prolific Erasmus stay.',
+    227: 'Scarf bought on a trip taken by Nacho and the mischievous dads from the school year.',
+    228: 'The final contributions from Jon Haitz’s stay in Boston—apparently quite hard-won. Thank you, JH!',
+    229: 'The final contributions from Jon Haitz’s stay in Boston—apparently quite hard-won. Thank you, JH!',
+    230: 'The final contributions from Jon Haitz’s stay in Boston—apparently quite hard-won. Thank you, JH!',
+    231: 'Scarf brought back by Eli when she attended a conference in Glasgow.',
+    232: 'A quick trip to Sicily by Eneko and friends. I already had all the major scarves from there and had no hope of getting a new one, but Eneko is great! Sicilia FC is a small club right now, though rumor has it they are destined for big things.',
+    233: 'A complete surprise scarf brought back by Asier and Estitxu from their trip to southern Italy.',
+    234: 'Tomas gave me the very scarf he had bought during his own Erasmus—it turned up while he was cleaning out his house.',
+    235: 'Scarf from Ainhoa’s prolific Erasmus stay.',
+    236: 'Scarf from Ainhoa’s prolific Erasmus stay.',
+    237: 'Scarf from Ainhoa’s prolific Erasmus stay.',
+    238: 'Scarf from Ainhoa’s prolific Erasmus stay.',
+    239: 'Scarf from Ainhoa’s prolific Erasmus stay.',
+    240: 'The Copa del Rey final scarf I bought in Donostia. In the end, Ittu brought me one directly from the final in Seville—that other one is the truly special one.',
+    241: 'Scarf released to celebrate Real Sociedad winning the Copa del Rey. Bought at the Real Sociedad store in Donostia.',
+    242: 'The first African scarf in the collection, obtained by the Madariaga family on their trip to Morocco.',
+}
+
 
 def format_date_display(noiz_str, lang='eu'):
     if not noiz_str:
@@ -209,10 +335,50 @@ def format_date_display(noiz_str, lang='eu'):
     return text
 
 
+def format_league_display(liga_val, lang='eu'):
+    if not liga_val:
+        return ''
+    text = str(liga_val).strip()
+    if not text or text.lower() == 'nan':
+        return ''
+    if lang == 'en':
+        return LEAGUE_MAP_EN.get(text, text)
+    return text
+
+
+def format_story_display(bufanda, lang='eu'):
+    if not bufanda:
+        return ''
+    if isinstance(bufanda, str):
+        text = bufanda.strip()
+        return '' if not text or text.lower() == 'nan' else text
+
+    keys = set(bufanda.keys())
+    raw_eu = bufanda['BESTE'] if 'BESTE' in keys else ''
+    eu_text = str(raw_eu).strip() if raw_eu is not None else ''
+    if not eu_text or eu_text.lower() == 'nan':
+        return ''
+
+    if lang == 'en':
+        if 'BESTE_EN' in keys and bufanda['BESTE_EN'] is not None:
+            en_col = str(bufanda['BESTE_EN']).strip()
+            if en_col and en_col.lower() != 'nan':
+                return en_col
+        if 'ZENBAKIA' in keys and bufanda['ZENBAKIA'] is not None:
+            try:
+                zenb = int(bufanda['ZENBAKIA'])
+                if zenb in STORY_MAP_EN_BY_ID:
+                    return STORY_MAP_EN_BY_ID[zenb]
+            except (ValueError, TypeError):
+                pass
+    return eu_text
+
+
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
+
 
 def get_existing_scarf_images(bufanda):
     """Return only image filenames that actually exist inside static/images."""
@@ -322,6 +488,8 @@ def inject_globals():
         't': t,
         'switch_lang_url': switch_lang_url,
         'format_date': lambda val: format_date_display(val, lang),
+        'format_league': lambda val: format_league_display(val, lang),
+        'format_story': lambda val: format_story_display(val, lang),
     }
 
 
@@ -385,21 +553,64 @@ def bilduma():
     where_clauses = []
 
     if current_search_query:
+        q_lower = current_search_query.lower()
+        cursor = conn.execute("PRAGMA table_info(bufandas)")
+        table_cols = [col[1] for col in cursor.fetchall()]
+        table_cols_upper = {c.upper(): c for c in table_cols}
+
+        matching_eu_leagues = [
+            eu_l for eu_l, en_l in LEAGUE_MAP_EN.items()
+            if q_lower in eu_l.lower() or q_lower in en_l.lower()
+        ]
+        matching_story_ids = [
+            zenb for zenb, en_s in STORY_MAP_EN_BY_ID.items()
+            if q_lower in en_s.lower()
+        ]
+
         if search_field == 'all':
-            cursor = conn.execute("PRAGMA table_info(bufandas)")
             excluded = {'ZENBAKIA', 'NONDIK X', 'NONDIK Y', 'MAIN_IMAGE', 'IMAGE_1', 'IMAGE_2', 'IMAGE_3', 'IMAGE_4', 'IMAGE_5'}
-            all_cols = [col[1] for col in cursor.fetchall() if col[1].upper() not in excluded]
+            all_cols = [col for col in table_cols if col.upper() not in excluded]
 
             search_like_clauses = []
             for col in all_cols:
                 search_like_clauses.append(f'"{col}" LIKE ?')
                 params.append(f"%{current_search_query}%")
+            if matching_eu_leagues:
+                placeholders = ', '.join(['?'] * len(matching_eu_leagues))
+                search_like_clauses.append(f'"LIGA" IN ({placeholders})')
+                params.extend(matching_eu_leagues)
+            if matching_story_ids:
+                placeholders = ', '.join(['?'] * len(matching_story_ids))
+                search_like_clauses.append(f'"ZENBAKIA" IN ({placeholders})')
+                params.extend(matching_story_ids)
             if search_like_clauses:
                 where_clauses.append(f"({' OR '.join(search_like_clauses)})")
 
         elif search_field == 'NOIZ':
             where_clauses.append("SUBSTR(NOIZ, 1, 4) = ?")
             params.append(current_search_query)
+        elif search_field == 'LIGA':
+            liga_clauses = ['"LIGA" LIKE ?']
+            params.append(f"%{current_search_query}%")
+            if 'LIGA_EN' in table_cols_upper:
+                liga_clauses.append(f'"{table_cols_upper["LIGA_EN"]}" LIKE ?')
+                params.append(f"%{current_search_query}%")
+            if matching_eu_leagues:
+                placeholders = ', '.join(['?'] * len(matching_eu_leagues))
+                liga_clauses.append(f'"LIGA" IN ({placeholders})')
+                params.extend(matching_eu_leagues)
+            where_clauses.append(f"({' OR '.join(liga_clauses)})")
+        elif search_field == 'BESTE':
+            story_clauses = ['"BESTE" LIKE ?']
+            params.append(f"%{current_search_query}%")
+            if 'BESTE_EN' in table_cols_upper:
+                story_clauses.append(f'"{table_cols_upper["BESTE_EN"]}" LIKE ?')
+                params.append(f"%{current_search_query}%")
+            if matching_story_ids:
+                placeholders = ', '.join(['?'] * len(matching_story_ids))
+                story_clauses.append(f'"ZENBAKIA" IN ({placeholders})')
+                params.extend(matching_story_ids)
+            where_clauses.append(f"({' OR '.join(story_clauses)})")
         else:
             allowed_fields = {'TALDEA', 'NONDIK', 'LIGA', 'NORK', 'BESTE'}
             if search_field in allowed_fields:
@@ -447,7 +658,7 @@ def mapa():
     scarves_map_data = []
     leagues_set = set()
     for r in rows:
-        liga_val = r['LIGA'] or ''
+        liga_val = format_league_display(r['LIGA'], lang)
         if liga_val:
             leagues_set.add(liga_val)
         scarves_map_data.append({
@@ -459,7 +670,7 @@ def mapa():
             'liga': liga_val,
             'nork': r['NORK'] or '',
             'noiz': format_date_display(r['NOIZ'], lang),
-            'beste': r['BESTE'] or '',
+            'beste': format_story_display(r, lang),
             'main_image': r['main_image'] or '',
             'url': url_for('bufanda_detalle', bufanda_id=r['ZENBAKIA']),
         })
