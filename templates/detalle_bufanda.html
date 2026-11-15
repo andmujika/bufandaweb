@@ -37,46 +37,32 @@
             <a href="{{ url_for('bilduma', search_field='NORK', search_query=bufanda.NORK) }}">{{ bufanda.NORK }}</a>
         </p>
         {% endif %}
-
-        {% if bufanda['NONDIK X'] is not none and bufanda['NONDIK Y'] is not none %}
-        <p>
-            <strong>{{ t['detail_coords'] }}:</strong>
-            <span>{{ "%.4f"|format(bufanda['NONDIK Y']) }}, {{ "%.4f"|format(bufanda['NONDIK X']) }}</span>
-        </p>
-        {% endif %}
     </div>
 
     <div class="detail-story-box">
         <p><strong>{{ t['detail_story'] }}:</strong> {{ bufanda.BESTE if bufanda.BESTE else t['detail_no_story'] }}</p>
     </div>
 
-    <h2>{{ t['detail_photos'] }}</h2>
-    {% set img_cols = [bufanda.main_image, bufanda.image_1, bufanda.image_2, bufanda.image_3] %}
-    {% set valid_imgs = [] %}
-    {% for img_name in img_cols %}
-        {% if img_name %}
-            {% set _ = valid_imgs.append(img_name) %}
-        {% endif %}
-    {% endfor %}
+    {% if valid_imgs and valid_imgs|length > 0 %}
+    <div class="detail-photos-section" id="photosSection">
+        <h2>{{ t['detail_photos'] }}</h2>
+        <div class="carousel-container" id="carouselContainer">
+            <div class="carousel-slide" id="carouselSlide">
+                {% for img_name in valid_imgs %}
+                    <img src="{{ url_for('static', filename='images/' + img_name) }}"
+                         alt="{{ bufanda.TALDEA }} - {{ loop.index }}"
+                         onerror="handleImgError(this)">
+                {% endfor %}
+            </div>
 
-    {% if valid_imgs|length > 0 %}
-    <div class="carousel-container" id="carouselContainer">
-        <div class="carousel-slide" id="carouselSlide">
-            {% for img_name in valid_imgs %}
-                <img src="{{ url_for('static', filename='images/' + img_name) }}"
-                     alt="{{ bufanda.TALDEA }} - {{ loop.index }}"
-                     onerror="handleImgError(this)">
-            {% endfor %}
-        </div>
-
-        <div class="carousel-nav" id="carouselNav">
-            <button type="button" class="prev-btn" aria-label="Previous">&lt;</button>
-            <button type="button" class="next-btn" aria-label="Next">&gt;</button>
+            {% if valid_imgs|length > 1 %}
+            <div class="carousel-nav" id="carouselNav">
+                <button type="button" class="prev-btn" aria-label="Previous">&lt;</button>
+                <button type="button" class="next-btn" aria-label="Next">&gt;</button>
+            </div>
+            {% endif %}
         </div>
     </div>
-    <p class="no-fotos-msg" id="noFotosFallback" style="display: none;">{{ t['detail_no_photos'] }}</p>
-    {% else %}
-    <p class="no-fotos-msg">{{ t['detail_no_photos'] }}</p>
     {% endif %}
 
     <div class="detail-footer-actions">
@@ -98,16 +84,15 @@
     let counter = 0;
 
     function refreshCarousel() {
+        const photosSection = document.getElementById('photosSection');
         const container = document.getElementById('carouselContainer');
-        const fallback = document.getElementById('noFotosFallback');
         const slide = document.getElementById('carouselSlide');
         const nav = document.getElementById('carouselNav');
         if (!slide) return;
 
         const imgs = slide.querySelectorAll('img');
         if (imgs.length === 0) {
-            if (container) container.style.display = 'none';
-            if (fallback) fallback.style.display = 'block';
+            if (photosSection) photosSection.style.display = 'none';
             return;
         }
         if (imgs.length === 1 && nav) {
@@ -124,22 +109,24 @@
         const nextBtn = document.querySelector('.next-btn');
         const container = document.getElementById('carouselContainer');
 
-        if (slide && nextBtn && prevBtn) {
-            nextBtn.addEventListener('click', () => {
-                const imgs = slide.querySelectorAll('img');
-                if (imgs.length === 0) return;
-                counter = (counter >= imgs.length - 1) ? 0 : counter + 1;
-                const size = imgs[0].clientWidth || container.clientWidth;
-                slide.style.transform = 'translateX(' + (-size * counter) + 'px)';
-            });
+        if (slide) {
+            if (nextBtn && prevBtn) {
+                nextBtn.addEventListener('click', () => {
+                    const imgs = slide.querySelectorAll('img');
+                    if (imgs.length === 0) return;
+                    counter = (counter >= imgs.length - 1) ? 0 : counter + 1;
+                    const size = imgs[0].clientWidth || container.clientWidth;
+                    slide.style.transform = 'translateX(' + (-size * counter) + 'px)';
+                });
 
-            prevBtn.addEventListener('click', () => {
-                const imgs = slide.querySelectorAll('img');
-                if (imgs.length === 0) return;
-                counter = (counter <= 0) ? imgs.length - 1 : counter - 1;
-                const size = imgs[0].clientWidth || container.clientWidth;
-                slide.style.transform = 'translateX(' + (-size * counter) + 'px)';
-            });
+                prevBtn.addEventListener('click', () => {
+                    const imgs = slide.querySelectorAll('img');
+                    if (imgs.length === 0) return;
+                    counter = (counter <= 0) ? imgs.length - 1 : counter - 1;
+                    const size = imgs[0].clientWidth || container.clientWidth;
+                    slide.style.transform = 'translateX(' + (-size * counter) + 'px)';
+                });
+            }
 
             window.addEventListener('resize', refreshCarousel);
             refreshCarousel();

@@ -28,10 +28,8 @@
         <button type="button" id="mapResetBtn" class="btn-secondary-sm">{{ t['map_reset'] }}</button>
 
         <div class="map-layer-buttons" role="group" aria-label="Map layer switcher">
-            <button type="button" class="layer-btn active" data-layer="voyager">{{ t['map_style_voyager'] }}</button>
-            <button type="button" class="layer-btn" data-layer="osm">{{ t['map_style_osm'] }}</button>
+            <button type="button" class="layer-btn active" data-layer="osm">{{ t['map_style_osm'] }}</button>
             <button type="button" class="layer-btn" data-layer="satellite">{{ t['map_style_satellite'] }}</button>
-            <button type="button" class="layer-btn" data-layer="dark">{{ t['map_style_dark'] }}</button>
         </div>
 
         <div class="map-counter">
@@ -69,11 +67,6 @@
     };
 
     const tileLayers = {
-        voyager: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap &copy; CARTO',
-            subdomains: 'abcd',
-            maxZoom: 19
-        }),
         osm: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors',
             maxZoom: 19
@@ -81,22 +74,17 @@
         satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: '&copy; Esri',
             maxZoom: 18
-        }),
-        dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap &copy; CARTO',
-            subdomains: 'abcd',
-            maxZoom: 19
         })
     };
 
     const map = L.map('worldMap', {
         center: [38.0, 2.0],
         zoom: 3,
-        layers: [tileLayers.voyager],
+        layers: [tileLayers.osm],
         worldCopyJump: true
     });
 
-    let currentTileLayer = tileLayers.voyager;
+    let currentTileLayer = tileLayers.osm;
 
     document.querySelectorAll('.layer-btn').forEach(btn => {
         btn.addEventListener('click', () => {

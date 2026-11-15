@@ -86,10 +86,8 @@ TRANSLATIONS = {
         'map_reset': 'Berrezarri',
         'map_showing': 'Erakusten:',
         'map_scarves_unit': 'bufanda',
-        'map_style_voyager': 'Klasikoa',
         'map_style_osm': 'Estandarra',
         'map_style_satellite': 'Satelitea',
-        'map_style_dark': 'Iluna',
         'map_popup_city': 'Hiria',
         'map_popup_league': 'Liga',
         'map_popup_who': 'Nork',
@@ -171,10 +169,8 @@ TRANSLATIONS = {
         'map_reset': 'Reset',
         'map_showing': 'Showing:',
         'map_scarves_unit': 'scarves',
-        'map_style_voyager': 'Classic',
         'map_style_osm': 'Standard',
         'map_style_satellite': 'Satellite',
-        'map_style_dark': 'Dark',
         'map_popup_city': 'City',
         'map_popup_league': 'League',
         'map_popup_who': 'Brought By',
@@ -217,6 +213,32 @@ def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
+
+def get_existing_scarf_images(bufanda):
+    """Return only image filenames that actually exist inside static/images."""
+    if not bufanda:
+        return []
+    images_dir = os.path.join(app.static_folder, 'images')
+    img_cols = ['main_image', 'image_1', 'image_2', 'image_3', 'image_4', 'image_5']
+    available_keys = set(bufanda.keys())
+    valid_imgs = []
+    seen = set()
+    for col in img_cols:
+        if col not in available_keys:
+            continue
+        raw_val = bufanda[col]
+        if not raw_val:
+            continue
+        img_name = str(raw_val).strip()
+        if not img_name or img_name.lower() == 'nan' or img_name in seen:
+            continue
+        # Prevent path traversal and verify the file exists on disk
+        if os.path.basename(img_name) != img_name:
+            continue
+        if os.path.isfile(os.path.join(images_dir, img_name)):
+            valid_imgs.append(img_name)
+            seen.add(img_name)
+    return valid_imgs
 
 
 def cargar_o_seleccionar_bufanda_del_dia():
@@ -454,4 +476,5 @@ def bufanda_detalle(bufanda_id):
     conn.close()
     if bufanda is None:
         return t['not_found'], 404
-    return render_template('detalle_bufanda.html', bufanda=bufanda)
+    valid_imgs = get_existing_scarf_images(bufanda)
+    return render_template('detalle_bufanda.html', bufanda=bufanda, valid_imgs=valid_imgs)
