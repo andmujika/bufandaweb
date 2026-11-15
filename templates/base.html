@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t['site_title'] }}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{{ url_for('home') }}" class="brand-link" title="{{ t['site_title'] }}">
+                <img src="{{ url_for('static', filename='images/web_logo.png') }}" alt="{{ t['site_title'] }}" class="header-logo">
+            </a>
+
+            <nav class="main-nav" aria-label="Main Navigation">
+                <a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}">
+                    {{ t['nav_home'] }}
+                </a>
+                <a href="{{ url_for('bilduma') }}" class="nav-link {% if request.endpoint in ('bilduma', 'bufanda_detalle') %}active{% endif %}">
+                    {{ t['nav_collection'] }}
+                </a>
+                <a href="{{ url_for('mapa') }}" class="nav-link {% if request.endpoint == 'mapa' %}active{% endif %}">
+                    {{ t['nav_map'] }}
+                </a>
+            </nav>
+
+            <div class="lang-switcher" role="group" aria-label="Language switcher">
+                <a href="{{ switch_lang_url('eu') }}" class="lang-btn {% if lang == 'eu' %}active{% endif %}" hreflang="eu">EU</a>
+                <a href="{{ switch_lang_url('en') }}" class="lang-btn {% if lang == 'en' %}active{% endif %}" hreflang="en">EN</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <p>{{ t['footer_text'] }}</p>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

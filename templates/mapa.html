@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t['nav_map'] }} · {{ t['site_title'] }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+{% endblock %}
+
+{% block content %}
+<div class="map-page-wrapper">
+    <div class="map-page-header">
+        <h1>{{ t['map_title'] }}</h1>
+        <p>{{ t['map_subtitle'] }}</p>
+    </div>
+
+    <div class="map-controls-bar">
+        <input type="text" id="mapSearchInput" placeholder="{{ t['map_search_placeholder'] }}" autocomplete="off">
+
+        <select id="mapLeagueFilter">
+            <option value="">{{ t['map_league_all'] }}</option>
+            {% for liga in all_leagues %}
+                <option value="{{ liga }}">{{ liga }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="button" id="mapResetBtn" class="btn-secondary-sm">{{ t['map_reset'] }}</button>
+
+        <div class="map-layer-buttons" role="group" aria-label="Map layer switcher">
+            <button type="button" class="layer-btn active" data-layer="voyager">{{ t['map_style_voyager'] }}</button>
+            <button type="button" class="layer-btn" data-layer="osm">{{ t['map_style_osm'] }}</button>
+            <button type="button" class="layer-btn" data-layer="satellite">{{ t['map_style_satellite'] }}</button>
+            <button type="button" class="layer-btn" data-layer="dark">{{ t['map_style_dark'] }}</button>
+        </div>
+
+        <div class="map-counter">
+            {{ t['map_showing'] }} <strong id="visibleCount">{{ scarves_map_data|length }}</strong> / {{ scarves_map_data|length }} {{ t['map_scarves_unit'] }}
+        </div>
+    </div>
+
+    <div class="map-workspace">
+        <div id="worldMap" class="world-map-canvas"></div>
+
+        <aside class="map-sidebar">
+            <div class="map-sidebar-header">
+                <h3>{{ t['map_sidebar_title'] }}</h3>
+                <span id="sidebarBadge" class="sidebar-badge">{{ scarves_map_data|length }}</span>
+            </div>
+            <div id="mapSidebarList" class="map-sidebar-list"></div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+    const SCARVES_DATA = {{ scarves_map_data | tojson }};
+    const FOCUS_ZENBAKIA = {{ focus_zenbakia | tojson }};
+    const LABELS = {
+        city: {{ t['map_popup_city'] | tojson }},
+        league: {{ t['map_popup_league'] | tojson }},
+        who: {{ t['map_popup_who'] | tojson }},
+        date: {{ t['map_popup_date'] | tojson }},
+        link: {{ t['map_popup_link'] | tojson }},
+        staticBase: {{ url_for('static', filename='images/') | tojson }}
+    };
+
+    const tileLayers = {
+        voyager: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }),
+        osm: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }),
+        satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '&copy; Esri',
+            maxZoom: 18
+        }),
+        dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        })
+    };
+
+    const map = L.map('worldMap', {
+        center: [38.0, 2.0],
+        zoom: 3,
+        layers: [tileLayers.voyager],
+        worldCopyJump: true
+    });
+
+    let currentTileLayer = tileLayers.voyager;
+
+    document.querySelectorAll('.layer-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const key = btn.dataset.layer;
+            if (!tileLayers[key]) return;
+            map.removeLayer(currentTileLayer);
+            currentTileLayer = tileLayers[key];
+            map.addLayer(currentTileLayer);
+            document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    const markersCluster = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        maxClusterRadius: 42,
+        spiderfyOnMaxZoom: true,
+        spiderfyDistanceMultiplier: 1.4
+    });
+
+    const markerById = {};
+
+    function createCustomPin() {
+        return L.divIcon({
+            className: 'custom-scarf-pin',
+            html: '<div class="pin-dot"></div>',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11],
+            popupAnchor: [0, -12]
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function buildPopupHtml(item) {
+        let imgHtml = '';
+        if (item.main_image) {
+            imgHtml = `<img src="${LABELS.staticBase}${encodeURIComponent(item.main_image)}"
+                            alt="${escapeHtml(item.taldea)}"
+                            class="popup-thumb"
+                            onerror="this.style.display='none'">`;
+        }
+        return `
+            <div class="scarf-popup">
+                ${imgHtml}
+                <h4 class="popup-title">
+                    <a href="${item.url}">${escapeHtml(item.taldea)}</a>
+                </h4>
+                <div class="popup-details">
+                    <div><strong>${LABELS.city}:</strong> ${escapeHtml(item.nondik)}</div>
+                    ${item.liga ? `<div><strong>${LABELS.league}:</strong> ${escapeHtml(item.liga)}</div>` : ''}
+                    ${item.nork ? `<div><strong>${LABELS.who}:</strong> ${escapeHtml(item.nork)}</div>` : ''}
+                    ${item.noiz ? `<div><strong>${LABELS.date}:</strong> ${escapeHtml(item.noiz)}</div>` : ''}
+                </div>
+                <a href="${item.url}" class="popup-cta-btn">${LABELS.link}</a>
+            </div>
+        `;
+    }
+
+    const searchInput = document.getElementById('mapSearchInput');
+    const leagueSelect = document.getElementById('mapLeagueFilter');
+    const resetBtn = document.getElementById('mapResetBtn');
+    const visibleCountEl = document.getElementById('visibleCount');
+    const sidebarBadgeEl = document.getElementById('sidebarBadge');
+    const sidebarListEl = document.getElementById('mapSidebarList');
+
+    function renderMapAndSidebar(fitToBounds = false) {
+        const query = searchInput.value.trim().toLowerCase();
+        const selectedLeague = leagueSelect.value;
+
+        markersCluster.clearLayers();
+        sidebarListEl.innerHTML = '';
+
+        const filtered = SCARVES_DATA.filter(item => {
+            if (selectedLeague && item.liga !== selectedLeague) return false;
+            if (!query) return true;
+            const hay = `${item.taldea} ${item.nondik} ${item.liga} ${item.nork} ${item.noiz}`.toLowerCase();
+            return hay.includes(query);
+        });
+
+        visibleCountEl.textContent = filtered.length;
+        sidebarBadgeEl.textContent = filtered.length;
+
+        const bounds = [];
+
+        filtered.forEach(item => {
+            const marker = L.marker([item.lat, item.lon], { icon: createCustomPin() });
+            marker.bindPopup(buildPopupHtml(item), { maxWidth: 270 });
+            markersCluster.addLayer(marker);
+            markerById[item.zenbakia] = marker;
+            bounds.push([item.lat, item.lon]);
+
+            const row = document.createElement('div');
+            row.className = 'sidebar-item';
+            row.innerHTML = `
+                <div class="sidebar-item-main">
+                    <div class="sidebar-team">${escapeHtml(item.taldea)}</div>
+                    <div class="sidebar-meta">${escapeHtml(item.nondik)} · ${escapeHtml(item.liga)}</div>
+                </div>
+                <a href="${item.url}" class="sidebar-detail-link" title="${LABELS.link}" onclick="event.stopPropagation()">→</a>
+            `;
+            row.addEventListener('click', () => {
+                markersCluster.zoomToShowLayer(marker, () => {
+                    marker.openPopup();
+                });
+            });
+            sidebarListEl.appendChild(row);
+        });
+
+        map.addLayer(markersCluster);
+
+        if (fitToBounds && bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 });
+        }
+    }
+
+    searchInput.addEventListener('input', () => renderMapAndSidebar(false));
+    leagueSelect.addEventListener('change', () => renderMapAndSidebar(true));
+    resetBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        leagueSelect.value = '';
+        renderMapAndSidebar(false);
+        map.setView([38.0, 2.0], 3);
+    });
+
+    renderMapAndSidebar(false);
+
+    // Ensure Leaflet renders tiles properly after layout settles
+    setTimeout(() => {
+        map.invalidateSize();
+        if (FOCUS_ZENBAKIA && markerById[FOCUS_ZENBAKIA]) {
+            const targetMarker = markerById[FOCUS_ZENBAKIA];
+            markersCluster.zoomToShowLayer(targetMarker, () => {
+                targetMarker.openPopup();
+            });
+        }
+    }, 250);
+
+    window.addEventListener('resize', () => map.invalidateSize());
+</script>
+{% endblock %}

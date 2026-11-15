@@ -1,119 +1,149 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bufanda: {{ bufanda.TALDEA }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-	<div class="logo-container">
-        <img src="{{ url_for('static', filename='images/web_logo.png') }}" alt="Nire Bufanda Bilduma Logo" class="main-logo">
-    </div>
-	
-    <div class="detail-container">
-        <h1>{{ bufanda.TALDEA }}</h1>
-        <p><strong>Data:</strong> <a href="{{ url_for('index', search_field='NOIZ', search_query_year=bufanda.NOIZ.split(' ')[0]) }}">{{ bufanda.NOIZ }}</a></p>
-        <p><strong>Liga:</strong> <a href="{{ url_for('index', search_field='LIGA', search_query=bufanda.LIGA) }}">{{ bufanda.LIGA }}</a></p>
-        <p><strong>Nork Ekarria:</strong> <a href="{{ url_for('index', search_field='NORK', search_query=bufanda.NORK) }}">{{ bufanda.NORK }}</a></p>
-        <p><strong>Istorioa:</strong> {{ bufanda.BESTE }}</p>
+{% extends "base.html" %}
 
-        <h2>Argazkiak</h2>
-        <div class="carousel-container">
-            <div class="carousel-slide">
-                {% set photos_available = false %}
+{% block title %}{{ bufanda.TALDEA }} · {{ t['site_title'] }}{% endblock %}
 
-                {% if bufanda.MAIN_IMAGE %}
-                    <img src="{{ url_for('static', filename='images/' + bufanda.MAIN_IMAGE) }}" alt="Bufanda de {{ bufanda.TALDEA }} - Principal">
-                    {% set photos_available = true %}
-                {% endif %}
-                {% if bufanda.IMAGE_1 %}
-                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_1) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 1">
-                    {% set photos_available = true %}
-                {% endif %}
-                {% if bufanda.IMAGE_2 %}
-                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_2) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 2">
-                    {% set photos_available = true %}
-                {% endif %}
-                {# Añade más bloques 'if' aquí si tienes más columnas de imagen (e.g., IMAGE_3, IMAGE_4) #}
-                {% if bufanda.IMAGE_3 %}
-                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_3) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 3">
-                    {% set photos_available = true %}
-                {% endif %}
-                {% if bufanda.IMAGE_4 %}
-                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_4) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 4">
-                    {% set photos_available = true %}
-                {% endif %}
-                {% if bufanda.IMAGE_5 %}
-                    <img src="{{ url_for('static', filename='images/' + bufanda.IMAGE_5) }}" alt="Bufanda {{ bufanda.TALDEA }} - Foto 5">
-                    {% set photos_available = true %}
-                {% endif %}
-            </div>
+{% block content %}
+<div class="detail-container">
+    <h1>{{ bufanda.TALDEA }}</h1>
 
-            {% if photos_available %}
-            <div class="carousel-nav">
-                <button class="prev-btn">&lt;</button>
-                <button class="next-btn">&gt;</button>
-            </div>
+    <div class="detail-meta-grid">
+        {% if bufanda.NONDIK %}
+        <p>
+            <strong>{{ t['detail_city'] }}:</strong>
+            <a href="{{ url_for('bilduma', search_field='NONDIK', search_query=bufanda.NONDIK) }}">{{ bufanda.NONDIK }}</a>
+            {% if bufanda['NONDIK X'] is not none and bufanda['NONDIK Y'] is not none %}
+                · <a href="{{ url_for('mapa', zenbakia=bufanda.ZENBAKIA) }}" class="map-inline-link">📍 {{ t['detail_view_on_map'] }}</a>
             {% endif %}
-        </div>
-
-        {% if not photos_available %}
-            <p class="no-fotos-msg">Ez dago argazkirik</p>
+        </p>
         {% endif %}
 
-        <a href="{{ url_for('index') }}" class="back-link">← Itzuli</a>
+        {% if bufanda.NOIZ %}
+        <p>
+            <strong>{{ t['detail_date'] }}:</strong>
+            <a href="{{ url_for('bilduma', search_field='NOIZ', search_query_year=bufanda.NOIZ.split(' ')[0]) }}">{{ format_date(bufanda.NOIZ) }}</a>
+        </p>
+        {% endif %}
+
+        {% if bufanda.LIGA %}
+        <p>
+            <strong>{{ t['detail_league'] }}:</strong>
+            <a href="{{ url_for('bilduma', search_field='LIGA', search_query=bufanda.LIGA) }}">{{ bufanda.LIGA }}</a>
+        </p>
+        {% endif %}
+
+        {% if bufanda.NORK %}
+        <p>
+            <strong>{{ t['detail_who'] }}:</strong>
+            <a href="{{ url_for('bilduma', search_field='NORK', search_query=bufanda.NORK) }}">{{ bufanda.NORK }}</a>
+        </p>
+        {% endif %}
+
+        {% if bufanda['NONDIK X'] is not none and bufanda['NONDIK Y'] is not none %}
+        <p>
+            <strong>{{ t['detail_coords'] }}:</strong>
+            <span>{{ "%.4f"|format(bufanda['NONDIK Y']) }}, {{ "%.4f"|format(bufanda['NONDIK X']) }}</span>
+        </p>
+        {% endif %}
     </div>
 
-    <script>
-        const carouselSlide = document.querySelector('.carousel-slide');
-        const carouselImages = document.querySelectorAll('.carousel-slide img');
+    <div class="detail-story-box">
+        <p><strong>{{ t['detail_story'] }}:</strong> {{ bufanda.BESTE if bufanda.BESTE else t['detail_no_story'] }}</p>
+    </div>
+
+    <h2>{{ t['detail_photos'] }}</h2>
+    {% set img_cols = [bufanda.main_image, bufanda.image_1, bufanda.image_2, bufanda.image_3] %}
+    {% set valid_imgs = [] %}
+    {% for img_name in img_cols %}
+        {% if img_name %}
+            {% set _ = valid_imgs.append(img_name) %}
+        {% endif %}
+    {% endfor %}
+
+    {% if valid_imgs|length > 0 %}
+    <div class="carousel-container" id="carouselContainer">
+        <div class="carousel-slide" id="carouselSlide">
+            {% for img_name in valid_imgs %}
+                <img src="{{ url_for('static', filename='images/' + img_name) }}"
+                     alt="{{ bufanda.TALDEA }} - {{ loop.index }}"
+                     onerror="handleImgError(this)">
+            {% endfor %}
+        </div>
+
+        <div class="carousel-nav" id="carouselNav">
+            <button type="button" class="prev-btn" aria-label="Previous">&lt;</button>
+            <button type="button" class="next-btn" aria-label="Next">&gt;</button>
+        </div>
+    </div>
+    <p class="no-fotos-msg" id="noFotosFallback" style="display: none;">{{ t['detail_no_photos'] }}</p>
+    {% else %}
+    <p class="no-fotos-msg">{{ t['detail_no_photos'] }}</p>
+    {% endif %}
+
+    <div class="detail-footer-actions">
+        <a href="{{ url_for('bilduma') }}" class="back-link">{{ t['back_to_collection'] }}</a>
+        {% if bufanda['NONDIK X'] is not none and bufanda['NONDIK Y'] is not none %}
+        <a href="{{ url_for('mapa', zenbakia=bufanda.ZENBAKIA) }}" class="btn-secondary">📍 {{ t['detail_view_on_map'] }}</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function handleImgError(img) {
+        img.remove();
+        refreshCarousel();
+    }
+
+    let counter = 0;
+
+    function refreshCarousel() {
+        const container = document.getElementById('carouselContainer');
+        const fallback = document.getElementById('noFotosFallback');
+        const slide = document.getElementById('carouselSlide');
+        const nav = document.getElementById('carouselNav');
+        if (!slide) return;
+
+        const imgs = slide.querySelectorAll('img');
+        if (imgs.length === 0) {
+            if (container) container.style.display = 'none';
+            if (fallback) fallback.style.display = 'block';
+            return;
+        }
+        if (imgs.length === 1 && nav) {
+            nav.style.display = 'none';
+        }
+        if (counter >= imgs.length) counter = 0;
+        const size = imgs[0].clientWidth || container.clientWidth;
+        slide.style.transform = 'translateX(' + (-size * counter) + 'px)';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const slide = document.getElementById('carouselSlide');
         const prevBtn = document.querySelector('.prev-btn');
         const nextBtn = document.querySelector('.next-btn');
+        const container = document.getElementById('carouselContainer');
 
-        if (carouselImages.length > 0) {
-            let counter = 0; // Inicia en la primera imagen (índice 0)
-            const size = carouselImages[0].clientWidth; // Ancho de una sola imagen
-
-            // Inicializar la posición del carrusel en la primera imagen
-            carouselSlide.style.transform = 'translateX(' + (-size * counter) + 'px)';
-
-            // Botón Siguiente
-            if (nextBtn) {
-                nextBtn.addEventListener('click', () => {
-                    if (counter >= carouselImages.length - 1) { // Si ya estamos en la última imagen
-                        counter = 0; // Volver al principio
-                    } else {
-                        counter++;
-                    }
-                    carouselSlide.style.transform = 'translateX(' + (-size * counter) + 'px)';
-                });
-            }
-
-            // Botón Anterior
-            if (prevBtn) {
-                prevBtn.addEventListener('click', () => {
-                    if (counter <= 0) { // Si ya estamos en la primera imagen
-                        counter = carouselImages.length - 1; // Ir a la última imagen
-                    } else {
-                        counter--;
-                    }
-                    carouselSlide.style.transform = 'translateX(' + (-size * counter) + 'px)';
-                });
-            }
-
-            // Opcional: Recalcular el tamaño si la ventana cambia de tamaño
-            window.addEventListener('resize', () => {
-                const newSize = carouselImages[0].clientWidth;
-                carouselSlide.style.transform = 'translateX(' + (-newSize * counter) + 'px)';
+        if (slide && nextBtn && prevBtn) {
+            nextBtn.addEventListener('click', () => {
+                const imgs = slide.querySelectorAll('img');
+                if (imgs.length === 0) return;
+                counter = (counter >= imgs.length - 1) ? 0 : counter + 1;
+                const size = imgs[0].clientWidth || container.clientWidth;
+                slide.style.transform = 'translateX(' + (-size * counter) + 'px)';
             });
 
-        } else {
-            // Ocultar los botones si no hay imágenes
-            if (prevBtn) prevBtn.style.display = 'none';
-            if (nextBtn) nextBtn.style.display = 'none';
-        }
+            prevBtn.addEventListener('click', () => {
+                const imgs = slide.querySelectorAll('img');
+                if (imgs.length === 0) return;
+                counter = (counter <= 0) ? imgs.length - 1 : counter - 1;
+                const size = imgs[0].clientWidth || container.clientWidth;
+                slide.style.transform = 'translateX(' + (-size * counter) + 'px)';
+            });
 
-    </script>
-</body>
-</html>
+            window.addEventListener('resize', refreshCarousel);
+            refreshCarousel();
+        }
+    });
+</script>
+{% endblock %}

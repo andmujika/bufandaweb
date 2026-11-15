@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t['nav_home'] }} · {{ t['site_title'] }}{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-card">
+        <span class="hero-badge">{{ t['hero_badge'] }}</span>
+        <div class="hero-logo-wrap">
+            <img src="{{ url_for('static', filename='images/web_logo.png') }}" alt="{{ t['site_title'] }}" class="hero-logo">
+        </div>
+        <h1>{{ t['hero_title'] }}</h1>
+        <p class="hero-subtitle">{{ t['hero_subtitle'] }}</p>
+        <div class="hero-actions">
+            <a href="{{ url_for('bilduma') }}" class="btn-primary">{{ t['hero_cta_collection'] }}</a>
+            <a href="{{ url_for('mapa') }}" class="btn-secondary">{{ t['hero_cta_map'] }}</a>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-number">{{ stats.total_scarves }}</span>
+            <span class="stat-label">{{ t['stat_scarves'] }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ stats.total_cities }}</span>
+            <span class="stat-label">{{ t['stat_cities'] }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ stats.total_leagues }}</span>
+            <span class="stat-label">{{ t['stat_leagues'] }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ stats.earliest_year }}</span>
+            <span class="stat-label">{{ t['stat_since'] }}</span>
+        </div>
+    </div>
+</section>
+
+<section class="about-section">
+    <div class="about-card">
+        <h2>{{ t['about_title'] }}</h2>
+        <div class="about-body">
+            <p>{{ t['about_p1'] }}</p>
+            <p>{{ t['about_p2'] }}</p>
+            <p>{{ t['about_p3'] }}</p>
+        </div>
+    </div>
+</section>
+
+{% if bufanda_del_dia %}
+<section class="sotd-section">
+    <div class="bufanda-del-dia">
+        <span class="sotd-badge">{{ t['sotd_badge'] }}</span>
+        <h2>{{ t['sotd_title'] }}</h2>
+        <div class="sotd-content">
+            {% if bufanda_del_dia.main_image %}
+            <div class="sotd-img-wrap">
+                <img src="{{ url_for('static', filename='images/' + bufanda_del_dia.main_image) }}"
+                     alt="{{ bufanda_del_dia.TALDEA }}"
+                     onerror="this.parentElement.style.display='none'">
+            </div>
+            {% endif %}
+            <div class="sotd-info">
+                <h3>{{ bufanda_del_dia.TALDEA }}</h3>
+                <p class="sotd-meta">
+                    {% if bufanda_del_dia.NONDIK %}<span><strong>{{ t['detail_city'] }}:</strong> {{ bufanda_del_dia.NONDIK }}</span>{% endif %}
+                    {% if bufanda_del_dia.LIGA %}<span><strong>{{ t['detail_league'] }}:</strong> {{ bufanda_del_dia.LIGA }}</span>{% endif %}
+                    {% if bufanda_del_dia.NOIZ %}<span><strong>{{ t['detail_date'] }}:</strong> {{ format_date(bufanda_del_dia.NOIZ) }}</span>{% endif %}
+                    {% if bufanda_del_dia.NORK %}<span><strong>{{ t['detail_who'] }}:</strong> {{ bufanda_del_dia.NORK }}</span>{% endif %}
+                </p>
+                {% if bufanda_del_dia.BESTE %}
+                <p class="sotd-story">"{{ bufanda_del_dia.BESTE }}"</p>
+                {% endif %}
+                <a href="{{ url_for('bufanda_detalle', bufanda_id=bufanda_del_dia.ZENBAKIA) }}" class="btn-primary">
+                    {{ t['sotd_cta'] }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
