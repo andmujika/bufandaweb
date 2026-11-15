@@ -242,47 +242,54 @@ def get_existing_scarf_images(bufanda):
 
 
 def cargar_o_seleccionar_bufanda_del_dia():
-    today = date.today()
     bufanda_zenbakia_del_dia = None
-    fecha_guardada = None
 
+    # 1. Irakurri zenbakia bufanda_del_dia.txt fitxategitik (hutsik ez badago)
     if os.path.exists(BUFANDA_DEL_DIA_FILE):
         with open(BUFANDA_DEL_DIA_FILE, 'r', encoding='utf-8') as f:
-            lineas = f.readlines()
-            if len(lineas) == 2:
-                fecha_guardada_str = lineas[0].strip()
-                bufanda_zenbakia_del_dia_str = lineas[1].strip()
+            lineas = [linea.strip() for linea in f.readlines() if linea.strip()]
+            if len(lineas) == 1:
                 try:
-                    fecha_guardada = date.fromisoformat(fecha_guardada_str)
-                    bufanda_zenbakia_del_dia = int(bufanda_zenbakia_del_dia_str)
+                    bufanda_zenbakia_del_dia = int(lineas[0])
                 except ValueError:
-                    pass
+                    bufanda_zenbakia_del_dia = None
+            elif len(lineas) >= 2:
+                # Bateragarritasuna mantentzeko (data + zenbakia formatua badu)
+                try:
+                    bufanda_zenbakia_del_dia = int(lineas[1])
+                except ValueError:
+                    try:
+                        bufanda_zenbakia_del_dia = int(lineas[0])
+                    except ValueError:
+                        bufanda_zenbakia_del_dia = None
 
-    if fecha_guardada != today or bufanda_zenbakia_del_dia is None:
-        conn = get_db_connection()
-        try:
-            cursor = conn.cursor()
-            cursor.execute("SELECT ZENBAKIA FROM bufandas")
-            zenbakiak_disponibles = [row[0] for row in cursor.fetchall()]
-            if zenbakiak_disponibles:
-                bufanda_zenbakia_del_dia = random.choice(zenbakiak_disponibles)
-                with open(BUFANDA_DEL_DIA_FILE, 'w', encoding='utf-8') as f:
-                    f.write(f'{today}\n{bufanda_zenbakia_del_dia}\n')
-            else:
-                bufanda_zenbakia_del_dia = None
-        finally:
-            conn.close()
-
-    if bufanda_zenbakia_del_dia:
-        conn = get_db_connection()
-        try:
+    conn = get_db_connection()
+    try:
+        # Fitxategian zenbaki baliodun bat badago, bilatu datu-basean
+        if bufanda_zenbakia_del_dia is not None:
             bufanda = conn.execute(
                 'SELECT * FROM bufandas WHERE ZENBAKIA = ?',
                 (bufanda_zenbakia_del_dia,)
             ).fetchone()
-            return bufanda
-        finally:
-            conn.close()
+            if bufanda is not None:
+                return bufanda
+
+        # 2. Fitxategia hutsik badago (edo zenbakia ez bada existitzen),
+        # gaurko data hartu eta horren arabera aukeratu zenbakia
+        today = date.today()
+        cursor = conn.cursor()
+        cursor.execute("SELECT ZENBAKIA FROM bufandas ORDER BY ZENBAKIA")
+        zenbakiak_disponibles = [row[0] for row in cursor.fetchall()]
+        if zenbakiak_disponibles:
+            rng = random.Random(today.isoformat())
+            bufanda_zenbakia_del_dia = rng.choice(zenbakiak_disponibles)
+            return conn.execute(
+                'SELECT * FROM bufandas WHERE ZENBAKIA = ?',
+                (bufanda_zenbakia_del_dia,)
+            ).fetchone()
+    finally:
+        conn.close()
+
     return None
 
 
